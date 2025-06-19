@@ -1,0 +1,31 @@
+import { useEffect, useState } from "react";
+function Counter(){
+    const [liczba, setLiczba] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/api/getcounter')
+        .then((res) => res.json())
+        .then((data) => setLiczba(data[0].liczba))
+        .catch((err) => console.error("Bład pobierania", err));
+    }, []);
+
+    const zwieksz = () => {
+        const nowa = liczba + 1;
+        setLiczba(nowa);
+
+        
+            fetch("http://localhost:5000/api/setcounter", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({liczba: nowa})
+            }).catch((err) => console.error("Bład zapisu", err))
+        }
+    
+    return (
+        <div className="h-1/2 w-1/2 bg-amber-400">
+            <h2>Licznik: {liczba}</h2>
+            <button onClick={zwieksz}>Zwiększ</button>
+        </div>
+    )
+}
+export default Counter

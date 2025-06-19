@@ -1,0 +1,41 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Upewnij się, że masz zainstalowany axios (npm install axios)
+import Counter from './Counter_nauka_db';
+function App() {
+
+    const [users, setUsers] = useState([]);
+
+    // Hook useEffect, który pobiera użytkowników raz po załadowaniu komponentu
+    useEffect(() => {
+        // Wykonujemy zapytanie GET do Twojego endpointu backendowego
+        // Upewnij się, że port (tutaj 5000) zgadza się z portem Twojego serwera Node.js
+        axios.get('http://localhost:5000/api/getuser')
+            .then(response => {
+                // Ustawiamy pobrane dane użytkowników w stanie komponentu
+                setUsers(response.data);
+                console.log(response);
+            })
+            .catch(error => {
+                // Wersja minimalistyczna: błąd jest tylko logowany do konsoli
+                console.error("Błąd podczas pobierania użytkowników:", error);
+            });
+    }, []); // Pusta tablica zależności oznacza uruchomienie tylko raz
+
+    // Renderowanie prostej listy użytkowników
+    return (
+        <div className='h-screen w-screen'>
+            <h1>Użytkownicy</h1>
+            <ul>
+                {/* Mapujemy przez tablicę użytkowników i wyświetlamy ich imię i email */}
+                {users.map(user => (
+                    <li key={user.id}>
+                        {user.name} ({user.email})
+                    </li>
+                ))}
+            </ul>
+            <Counter />
+        </div>
+    );
+}
+
+export default App;
